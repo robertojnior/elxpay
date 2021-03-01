@@ -1,11 +1,11 @@
-defmodule ElxpayWeb.Users.CreateController do
+defmodule ElxpayWeb.UsersController do
   use ElxpayWeb, :controller
 
   alias Elxpay.User
 
   action_fallback ElxpayWeb.FallbackController
 
-  def perform(conn, params) do
+  def create(conn, params) do
     with {:ok, %User{} = user} <- Elxpay.create_user(params) do
       conn
       |> put_status(:created)
