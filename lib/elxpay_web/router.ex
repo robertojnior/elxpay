@@ -8,7 +8,7 @@ defmodule ElxpayWeb.Router do
   scope "/api", ElxpayWeb do
     pipe_through :api
 
-    post "/users", Users.CreateController, :perform, as: :users
+    post "/users", UsersController, :create
   end
 
   # Enables LiveDashboard only for development

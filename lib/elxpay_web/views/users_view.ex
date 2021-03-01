@@ -1,4 +1,4 @@
-defmodule ElxpayWeb.Users.CreateView do
+defmodule ElxpayWeb.UsersView do
   use ElxpayWeb, :view
 
   alias Elxpay.User
