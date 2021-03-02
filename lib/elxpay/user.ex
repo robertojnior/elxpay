@@ -11,9 +11,9 @@ defmodule Elxpay.User do
 
   @primary_key {:id, :binary_id, autogenerate: true}
 
-  @permitted_params [:name, :birth_date, :gender, :email, :username, :password]
+  @required_fields [:name, :birth_date, :email, :username, :password]
 
-  @required_params [:name, :birth_date, :email, :username, :password]
+  @optional_fields [:gender]
 
   defenum Gender do
     value Female, "female"
@@ -38,8 +38,8 @@ defmodule Elxpay.User do
 
   def changeset(params) do
     %__MODULE__{}
-    |> cast(params, @permitted_params)
-    |> validate_required(@required_params)
+    |> cast(params, @required_fields ++ @optional_fields)
+    |> validate_required(@required_fields)
     |> validate_length(:username, max: 15)
     |> validate_format(:email, ~r/@/)
     |> validate_length(:password, min: 8)
@@ -47,7 +47,7 @@ defmodule Elxpay.User do
     |> must_be_at_least_eighteen_years_old()
     |> unique_constraint(:email)
     |> unique_constraint(:username)
-    |> encrypt_password()
+    |> put_ecrypted_password()
   end
 
   defp must_be_at_least_eighteen_years_old(changeset) do
@@ -58,11 +58,11 @@ defmodule Elxpay.User do
     end)
   end
 
-  defp encrypt_password(%Changeset{valid?: true, changes: %{password: password}} = changeset) do
+  defp put_ecrypted_password(%Changeset{valid?: true, changes: %{password: password}} = changeset) do
     %{password_hash: ecrypted_password} = Bcrypt.add_hash(password)
 
     change(changeset, ecrypted_password: ecrypted_password)
   end
 
-  defp encrypt_password(changeset), do: changeset
+  defp put_ecrypted_password(changeset), do: changeset
 end
